@@ -1,0 +1,47 @@
+---
+title: "Prepare Shiny Data"
+output: word_document
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+```{r}
+library(MASS) # for stepAIC.  Needs to be before dplyr to avoid "select" namespace clash
+library(dplyr)
+library(tidyverse)
+library(modelr)
+
+library(survey) # for rake()
+
+```
+
+
+```{r}
+load("NZIS.rda")
+```
+
+Add derived  variables and create an empty dataset that has the levels of our data (skeleton)
+```{r}
+f_mainheader$income[f_mainheader$income<0]=0
+f_mainheader = mutate(f_mainheader,lnincome = log(income+1))
+f_mainheader = mutate(f_mainheader,wt = 117.4)
+
+lmSTEP = lm(lnincome~hours + agegrp_id + occupation_id + agegrp_id:occupation_id + hours:occupation_id + hours:agegrp_id,data=f_mainheader)
+
+skeleton <- f_mainheader[0, ]
+
+save(lmSTEP, skeleton , file="model.rda")
+
+```
+
+
+Save all the categorical variables used in the model for display in drop down
+```{r}
+d_agegrp <- sort(as.character(unique(f_mainheader$agegrp_id)))
+d_occupation <- sort(as.character(unique(f_mainheader$occupation_id )))
+
+save(d_agegrp, d_occupation,
+     file = "dimensions.rda")
+```
+
+
