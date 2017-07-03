@@ -22,14 +22,22 @@ load("NZIS.rda")
 
 Add derived  variables and create an empty dataset that has the levels of our data (skeleton)
 ```{r}
+###########################################################
+#DON"T DO THE FOLLOWING STEPS IN YOUR PROJECT!!!!!!!!!!!!!
 f_mainheader$income[f_mainheader$income<0]=0
-f_mainheader = mutate(f_mainheader,lnincome = log(income+1))
 f_mainheader = mutate(f_mainheader,wt = 117.4)
+###########################################################3
 
+# add log of income to data
+f_mainheader = mutate(f_mainheader,lnincome = log(income+1))
+
+# fit the model
 lmSTEP = lm(lnincome~hours + agegrp_id + occupation_id + agegrp_id:occupation_id + hours:occupation_id + hours:agegrp_id,data=f_mainheader)
 
+#make a skeleton that has no data, but knows the levels of the factors
 skeleton <- f_mainheader[0, ]
 
+#save skeleton and model to use later
 save(lmSTEP, skeleton , file="model.rda")
 
 ```

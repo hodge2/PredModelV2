@@ -19,7 +19,7 @@ shinyServer(function(input, output) {
   })
   
   
-  output$Prediction <- renderPrint({
+  output$Prediction <- renderTable({
     
     # prediction for the given values
     y = suppressWarnings(predict(lmSTEP, newdata = person()))
