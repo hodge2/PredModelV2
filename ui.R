@@ -7,6 +7,8 @@
 
 library(shiny)
 load("dimensions.rda")
+load("simulated_pop.rda")
+load("model.rda")
 
 shinyUI(fluidPage(
 
@@ -32,7 +34,7 @@ shinyUI(fluidPage(
     
     # Show a plot of the generated distribution
     mainPanel(
-      tableOutput("Prediction")
+      plotOutput("Prediction")
     )
   )
 ))

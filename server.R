@@ -6,6 +6,7 @@
 #
 
 library(shiny)
+load("simulated_pop.rda")
 
 shinyServer(function(input, output) {
 
@@ -18,12 +19,18 @@ shinyServer(function(input, output) {
     return(tmp)
   })
   
-  
-  output$Prediction <- renderTable({
-    
+
+  output$Prediction <- renderPlot({
     # prediction for the given values
-    y = suppressWarnings(predict(lmSTEP, newdata = person()))
-    return( y)
+    model_pred = suppressWarnings(predict(lmSTEP, newdata = person()))
+    n = 10000
+    #draw random residuals
+    res = sample(lmSTEP$residuals,n,replace=TRUE)
+    res = tibble(res)
+    y = mutate(res,model_PI = exp(model_pred + res))
+    dens = (density(y$model_PI))
+    plot(pop_density, main="Income Density", xlim=c(0,5000), ylim=c(0,0.002))
+    lines(dens, col = "blue")
   })
 
 })
